@@ -1,0 +1,23 @@
+:plantuml-server-url: https://www.plantuml.com/plantuml
+:source-highlighter: rouge
+:chapter-label:
+:doctype: article
+
+= blog foo
+hello world
+
+introduction
+
+== section
+moo
+
+[plantuml, components, svg]
+....
+left to right direction
+skinparam monochrome true
+
+node "Foo" as backend
+node "SAP" as frontend
+
+frontend <--> backend
+....

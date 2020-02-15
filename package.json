@@ -1,0 +1,25 @@
+{
+  "name": "fully-abap-ci",
+  "version": "1.0.0",
+  "private": true,
+  "description": "blog, wip",
+  "main": "index.js",
+  "scripts": {
+    "test": "asciidoctor -r asciidoctor-plantuml -d article index.adoc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larshp/fully-abap-ci.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/larshp/fully-abap-ci/issues"
+  },
+  "homepage": "https://github.com/larshp/fully-abap-ci#readme",
+  "dependencies": {
+    "@asciidoctor/cli": "^3.2.0",
+    "@asciidoctor/core": "^2.1.1",
+    "asciidoctor-plantuml": "^1.5.0"
+  }
+}
