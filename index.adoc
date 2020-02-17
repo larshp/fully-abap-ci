@@ -4,7 +4,7 @@
 :doctype: article
 
 = Fully supporting CI in ABAP AS
-Lars Hvam, blog
+Lars Hvam
 
 == Introduction
 
@@ -44,7 +44,7 @@ moo
 
 revert icon = revert objects? but revert database is required
 
-if CI is done in the QAS system, it cannot be used for manual testing, for each change the developers make the system is changed. Alternatively no manual testing is done, but this is a different topic. Or specific timeslots are allocated for CI and some other for manual testing.
+if CI is done in the QAS system, it cannot be used for manual testing, for each change the developers make the system is changed. Alternatively no manual testing is done, but this is a different topic. Or specific time-slots are allocated for CI and some other for manual testing.
 
 example: abapGit CI tests, https://github.com/abapGit/CI, will in bad cases break the QAS system
 
@@ -186,4 +186,4 @@ CI in ABAP is difficult, choose your risk: cost/complexity/speed
 
 Do containerization
 
-Dont build development tools into the kernel
+Don't build development tools into the kernel

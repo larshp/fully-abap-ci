@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="hello world">
-<title>blog foo</title>
+<meta name="author" content="Lars Hvam">
+<title>Fully supporting CI in ABAP AS</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,36 +439,222 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>blog foo</h1>
+<h1>Fully supporting CI in ABAP AS</h1>
 <div class="details">
-<span id="author" class="author">hello world</span><br>
+<span id="author" class="author">Lars Hvam</span><br>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>introduc</p>
+<p>Continuous Integration(CI) is a word that can mean a lot of different things to different people.</p>
+</div>
+<div class="paragraph">
+<p>providing feedback to the developer</p>
+</div>
+<div class="paragraph">
+<p>&#8594; within reasonable time</p>
+</div>
+<div class="paragraph">
+<p>&#8594; reliable results, trust as foundation</p>
+</div>
+<div class="paragraph">
+<p>&#8594; for each change &#8594; scalable</p>
+</div>
+<div class="paragraph">
+<p>in ci/cd, the transport mechanism does not matter much,</p>
+</div>
+<div class="paragraph">
+<p>trying not to get into branching strategies, git, transport mechanisms, this is a different topic, which can be supported by CI</p>
+</div>
+<div class="paragraph">
+<p><a href="https://twitter.com/PanzerDominik/status/1227274686750478338/photo/1" class="bare">https://twitter.com/PanzerDominik/status/1227274686750478338/photo/1</a>
+<a href="https://twitter.com/WachterSascha/status/1227254813542559745/photo/1" class="bare">https://twitter.com/WachterSascha/status/1227254813542559745/photo/1</a></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_section">section</h2>
+<h2 id="_scenario_1_baseline">Scenario 1 - Baseline</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>moo</p>
 </div>
 <div class="imageblock plantuml">
 <div class="content">
-<img src="https://www.plantuml.com/plantuml/svg/FSv13e9G30JGVK_HiES6ng0dCF44zVy23RGr_UN-Wb4saydBB6PeIP6Rhh3oc9YE8TESM2MufBX1MyJU5AIeRbxcS6NCs1Z0l39sTtUL3gdXYyh2Ld_-l3s-EePR7Wp_XfU-lvxhOO_zm0S0" alt="components">
+<img src="https://www.plantuml.com/plantuml/svg/JOrB2e0m34JtFKKku1MaWkxzWFkYiIssYSHuVrjNBWPcvWsClTM9FZcPX8U2CaZqGM6FWfj69dEVaIudBaDcuYq8PmIL1qrTEF89eH_MNvgwvPV6kJU5GzEq7odwVEqjqbw-Nm00" alt="foobar1">
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_2_use_qas">Scenario 2 - Use QAS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>moo</p>
+</div>
+<div class="paragraph">
+<p>revert icon = revert objects? but revert database is required</p>
+</div>
+<div class="paragraph">
+<p>if CI is done in the QAS system, it cannot be used for manual testing, for each change the developers make the system is changed. Alternatively no manual testing is done, but this is a different topic. Or specific time-slots are allocated for CI and some other for manual testing.</p>
+</div>
+<div class="paragraph">
+<p>example: abapGit CI tests, <a href="https://github.com/abapGit/CI" class="bare">https://github.com/abapGit/CI</a>, will in bad cases break the QAS system</p>
+</div>
+<div class="imageblock plantuml">
+<div class="content">
+<img src="https://www.plantuml.com/plantuml/svg/JSv12eGm30NGVKwH2-WHH47twe3xKZDQR9CXnZd_jCA0Ym__mrlyzZIdTgK8aTw69gXXsmtNeEGj2CDv1FuuTGcJiFXT9H6QNWH5EDuYOJyiZpLrhySQvnwyiAb4dEbBQf0vLbLpmvox5rPwNNxKpP-sn6j-zmC0" alt="foobar2">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_3_add_new_ci_system">Scenario 3 - Add new CI system</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>So, to not disturb manual testing in the QAS system, the CI run can be moved to a different server.</p>
+</div>
+<div class="imageblock plantuml">
+<div class="content">
+<img src="https://www.plantuml.com/plantuml/svg/JOv13i8m30JlVeK_q3wXAg8Sk46Hk4UfQICI6xakxoU9X9IRnxiZxRYRKpjIX4WlGnFKi6w6Ir3o5eHXVmV-E7K9ax3uJIKHcXu4fU5uZOJJvTdG_VHew7njwJPFu8LD9U9CNrA3B6FN3LMhTrcIkOZvLxEYPSQ-PFtmLqVY9M__0G00" alt="foobar2">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_4_scalable_ci">Scenario 4 - Scalable CI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>instead spawn a CIS system when needed, no reverts</p>
+</div>
+<div class="paragraph">
+<p>In scenario 3, assuming CI is run for each change run one by one.</p>
+</div>
+<div class="paragraph">
+<p>Each CI run takes 10 minutes, each developer does 30 changes per day, with 2 developers = 60 changes = 600 minutes = 10 hours &#8658; more CI systems are required</p>
+</div>
+<div class="imageblock plantuml">
+<div class="content">
+<img src="https://www.plantuml.com/plantuml/svg/JOun3i8m34NtdC8NQ8zG5L46DcWbzgWrRKHY8yVb_3X1IDty_VoitsVredkABk9JGHaah9l24WHd3KmklmAzlVW4YOddJJWXgEpeoeMdDI8CbySXtK-Jcpd6tuCCv-jqeBTnC4eg76743uewqw5fkYhMkNInN4JRLLOqoz0MrdP_jKTQhFqN" alt="foobar2">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_5_containerization">Scenario 5 - Containerization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>for each change, spawn a new CIS system and deploy the changes, run CI</p>
+</div>
+<div class="paragraph">
+<p>&#8594; revert not reliable, unless each ABAP change is reliable, which I assume not</p>
+</div>
+<div class="paragraph">
+<p>Unit tests can change data in the database, they should not, but this is a different topic.</p>
+</div>
+<div class="paragraph">
+<p>Design the computer systems for worst case scenario, not assumptions regarding best case scenario.</p>
+</div>
+<div class="paragraph">
+<p>&#8594; reliable, same baseline for everything</p>
+</div>
+<div class="imageblock plantuml">
+<div class="content">
+<img src="https://www.plantuml.com/plantuml/svg/JOwn3i8m34HtVuL_eB-0YYW36r29FKfD6-7Oo77_doGitNo-fxiRYmVpFJCmlHrTqTAwEIx9A7fIWV99yWqMCcOLZPjf9dJR2HeHP6N2wVewgCTvXgZC_u22bzjySE_F2IgFmt3gPBzRUTMDhB_kDMuaMUgs7m00" alt="foobar2">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_6_run_inside_dev">Scenario 6 - Run inside DEV</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>partner solutions inside dev system</p>
+</div>
+<div class="paragraph">
+<p>Take the risk of less reliable results, and run the CI inside the DEV system.
+Already existing landscape</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_7_multiple_active_versions">Scenario 7 - Multiple active versions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>according to SAP they have support for development and maintenance within the same system on the road-map</p>
+</div>
+<div class="paragraph">
+<p>this is possible today, but with multiple systems</p>
+</div>
+<div class="paragraph">
+<p>I assume the new part will be supporting this in a single system, and at the same time. So the ABAP kernel will have to support multiple active versions at a time. When(if?) this is implemented, the CI can run within the DEV system, just on the version with the changes done by the developer.</p>
+</div>
+<div class="imageblock plantuml">
+<div class="content">
+<img src="https://www.plantuml.com/plantuml/svg/ROun3eD030HxlsB53-055F05UWiSEENEZdmcJPI_0qL4atPcLjg-1dli9LEMHo0CdjOji2INEP8frMVI5piN55ERDxSY2D-5he9rpO9XdF0Xu2RD95xFETe6NF4MR__xxkSx-b8lkfnV3W00" alt="foobar2">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_8_one_system_per_developer">Scenario 8 - One system per developer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>as suggested by @Ethan back in 2016</p>
+</div>
+<div class="paragraph">
+<p><a href="http://searchsap.techtarget.com/answer/How-can-I-use-Git-and-GitHub-for-SAP-software-development" class="bare">http://searchsap.techtarget.com/answer/How-can-I-use-Git-and-GitHub-for-SAP-software-development</a></p>
+</div>
+<div class="paragraph">
+<p><a href="http://searchsap.techtarget.com/tip/Implementing-modern-practices-in-an-ABAP-development-shop" class="bare">http://searchsap.techtarget.com/tip/Implementing-modern-practices-in-an-ABAP-development-shop</a></p>
+</div>
+<div class="imageblock plantuml">
+<div class="content">
+<img src="https://www.plantuml.com/plantuml/svg/TO-n3i8m34HtVuNLlKFo0QW3_0AxbPWs8eahn-Nx2Q2gGeZfvBkdisvgHcfRoP3vPcY2ckR5C2RbO4agj7kgAoaLB58bB2g5qNHZe62YE9pvmLbMLlG3KiEut-wNSD-4XzSNgdFcJbskxxIh--DxECfn74yVzgZRFGyJrzXNFG40" alt="foobar2">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scenario_9_front_load_outside_abap_as">Scenario 9 - Front-load outside ABAP AS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>sdf</p>
+</div>
+<div class="paragraph">
+<p>front load as much work as possible &#8594; abaplint</p>
+</div>
+<div class="paragraph">
+<p>&#8594; ecosystem!</p>
+</div>
+<div class="paragraph">
+<p>&#8594; no changes to SAP landscape</p>
+</div>
+<div class="paragraph">
+<p>&#8594; wrong results</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusions">Conclusions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CI in ABAP is difficult, choose your risk: cost/complexity/speed</p>
+</div>
+<div class="paragraph">
+<p>Do containerization</p>
+</div>
+<div class="paragraph">
+<p>Don&#8217;t build development tools into the kernel</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-15 10:07:07 +0100
+Last updated 2020-02-17 08:22:43 +0100
 </div>
 </div>
 </body>
