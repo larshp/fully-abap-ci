@@ -3,21 +3,187 @@
 :chapter-label:
 :doctype: article
 
-= blog foo
-hello world
+= Fully supporting CI in ABAP AS
+Lars Hvam, blog
 
-introduction
+== Introduction
 
-== section
+Continuous Integration(CI) is a word that can mean a lot of different things to different people.
+
+providing feedback to the developer
+
+-> within reasonable time
+
+-> reliable results, trust as foundation
+
+-> for each change -> scalable
+
+in ci/cd, the transport mechanism does not matter much,
+
+trying not to get into branching strategies, git, transport mechanisms, this is a different topic, which can be supported by CI
+
+https://twitter.com/PanzerDominik/status/1227274686750478338/photo/1
+https://twitter.com/WachterSascha/status/1227254813542559745/photo/1
+
+== Scenario 1 - Baseline
 moo
 
-[plantuml, components, svg]
+[plantuml, foobar1, svg]
 ....
 left to right direction
 skinparam monochrome true
-
-node "Foo" as backend
-node "SAP" as frontend
-
-frontend <--> backend
+rectangle DEV
+rectangle QAS
+rectangle PRD
+DEV --> QAS
+QAS --> PRD
 ....
+
+== Scenario 2 - Use QAS
+moo
+
+revert icon = revert objects? but revert database is required
+
+if CI is done in the QAS system, it cannot be used for manual testing, for each change the developers make the system is changed. Alternatively no manual testing is done, but this is a different topic. Or specific timeslots are allocated for CI and some other for manual testing.
+
+example: abapGit CI tests, https://github.com/abapGit/CI, will in bad cases break the QAS system
+
+[plantuml, foobar2, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV
+rectangle QAS
+rectangle PRD
+control Revert
+DEV --> QAS
+QAS --> PRD
+QAS .left.> Revert
+....
+
+== Scenario 3 - Add new CI system
+So, to not disturb manual testing in the QAS system, the CI run can be moved to a different server.
+
+[plantuml, foobar2, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV
+rectangle QAS
+rectangle CIS
+rectangle PRD
+control Revert
+DEV --> QAS
+DEV -left-> CIS
+QAS --> PRD
+CIS .left.> Revert
+....
+
+== Scenario 4 - Scalable CI
+instead spawn a CIS system when needed, no reverts
+
+In scenario 3, assuming CI is run for each change run one by one.
+
+Each CI run takes 10 minutes, each developer does 30 changes per day, with 2 developers = 60 changes = 600 minutes = 10 hours => more CI systems are required
+
+[plantuml, foobar2, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV
+rectangle QAS
+collections CIS
+rectangle PRD
+control Revert
+DEV --> QAS
+DEV -left-> CIS
+QAS --> PRD
+CIS .left.> Revert
+....
+
+== Scenario 5 - Containerization
+for each change, spawn a new CIS system and deploy the changes, run CI
+
+-> revert not reliable, unless each ABAP change is reliable, which I assume not
+
+Unit tests can change data in the database, they should not, but this is a different topic.
+
+Design the computer systems for worst case scenario, not assumptions regarding best case scenario.
+
+-> reliable, same baseline for everything
+
+[plantuml, foobar2, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV
+rectangle QAS
+collections CIS
+rectangle PRD
+DEV --> QAS
+DEV -left-> CIS
+QAS --> PRD
+....
+
+== Scenario 6 - Run inside DEV
+
+partner solutions inside dev system
+
+Take the risk of less reliable results, and run the CI inside the DEV system.
+Already existing landscape
+
+== Scenario 7 - Multiple active versions
+
+according to SAP they have support for development and maintenance within the same system on the road-map
+
+this is possible today, but with multiple systems
+
+I assume the new part will be supporting this in a single system, and at the same time. So the ABAP kernel will have to support multiple active versions at a time. When(if?) this is implemented, the CI can run within the DEV system, just on the version with the changes done by the developer.
+
+[plantuml, foobar2, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV {
+  rectangle "Version 1" as ver1
+  rectangle "Version 2" as ver2
+}
+....
+
+== Scenario 8 - One system per developer
+
+as suggested by @Ethan back in 2016
+
+http://searchsap.techtarget.com/answer/How-can-I-use-Git-and-GitHub-for-SAP-software-development
+
+http://searchsap.techtarget.com/tip/Implementing-modern-practices-in-an-ABAP-development-shop
+
+[plantuml, foobar2, svg]
+....
+left to right direction
+skinparam monochrome true
+actor "Developer 2" as developer1
+actor "Developer 1" as developer2
+rectangle "DEV" as DEV1
+rectangle "DEV" as DEV2
+developer1 --> DEV1
+developer2 --> DEV2
+....
+
+== Scenario 9 - Front-load outside ABAP AS
+sdf
+
+front load as much work as possible -> abaplint
+
+-> ecosystem!
+
+-> no changes to SAP landscape
+
+-> wrong results
+
+== Conclusions
+CI in ABAP is difficult, choose your risk: cost/complexity/speed
+
+Do containerization
+
+Dont build development tools into the kernel
