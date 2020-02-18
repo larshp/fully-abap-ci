@@ -8,27 +8,39 @@ Lars Hvam
 
 == Introduction
 
-Continuous Integration(CI) is a word that can mean a lot of different things to different people.
-
-providing feedback to the developer
-
--> within reasonable time
-
--> reliable results, trust as foundation
-
--> for each change -> scalable
-
-in ci/cd, the transport mechanism does not matter much,
-
-trying not to get into branching strategies, git, transport mechanisms, this is a different topic, which can be supported by CI
+At the recent #DSAGTT20(https://twitter.com/hashtag/DSAGTT20), SAP showed a few slides regarding in the area of continuous integration and ABAP:
 
 https://twitter.com/PanzerDominik/status/1227274686750478338/photo/1
+
 https://twitter.com/WachterSascha/status/1227254813542559745/photo/1
 
-== Scenario 1 - Baseline
-moo
+I did not attend the event, so the below might be out of context.
 
-[plantuml, foobar1, svg]
+== Continuous Integration
+
+Continuous Integration(CI) is a word that can mean a lot of different things to different people, to me its something about providing feedback to the developer for each change, the feedback must be reliable and provided within a timely manner.
+
+A change could be whenever the development is saved, or a commit, or something else, its really up to the development environment, which is a different topic. The developer needs the information to determine if its okay to push the change to a wider audience.
+
+Also exactly how the development is deployed to the CI system is a deployment topic. The scenarios below can be set up using the classic transport system.
+
+Elements of a CI pipeline might include:
+
+* Code Inspector / ATC
+* Coverage results
+* Unit tests
+* Integration tests
+* eCATT
+* UI tests
+* Performance tests
+* Metrics
+
+== Scenario 1 - Baseline
+Lets take a common setup with development, test and production. The developers do development in the development system, the test system is used for manual testing.
+
+Assumption: All organizations have a requirement for doing manual exploratory testing, even if all testing is automated, the QAS system cannot be scrapped.
+
+[plantuml, scenario1, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -39,16 +51,10 @@ DEV --> QAS
 QAS --> PRD
 ....
 
-== Scenario 2 - Use QAS
-moo
+== Scenario 2 - Use QAS for CI
+For each change done by the developers, the change is deployed to QAS and CI is run. When the results have been reported the change is reverted.
 
-revert icon = revert objects? but revert database is required
-
-if CI is done in the QAS system, it cannot be used for manual testing, for each change the developers make the system is changed. Alternatively no manual testing is done, but this is a different topic. Or specific time-slots are allocated for CI and some other for manual testing.
-
-example: abapGit CI tests, https://github.com/abapGit/CI, will in bad cases break the QAS system
-
-[plantuml, foobar2, svg]
+[plantuml, scenario2, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -61,10 +67,14 @@ QAS --> PRD
 QAS .left.> Revert
 ....
 
-== Scenario 3 - Add new CI system
-So, to not disturb manual testing in the QAS system, the CI run can be moved to a different server.
+For ABAP systems its difficult to do a proper rollback of the objects. The unit and integration tests might change data in the system(they should not), so a full database rollback is required to have fully reliable results.
 
-[plantuml, foobar2, svg]
+This means that the system cannot be used for manual testing at the same time, for each change the developers make the system is changed. Alternatively specific time-slots are allocated for CI and some other for manual testing.
+
+== Scenario 3 - Add new CI system
+So, to not disturb manual testing in the QAS system, the CI run can be moved to a different server. CI runs in CIS system, and manual testing is done in QAS,
+
+[plantuml, scenario3, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -80,13 +90,13 @@ CIS .left.> Revert
 ....
 
 == Scenario 4 - Scalable CI
-instead spawn a CIS system when needed, no reverts
-
 In scenario 3, assuming CI is run for each change run one by one.
 
-Each CI run takes 10 minutes, each developer does 30 changes per day, with 2 developers = 60 changes = 600 minutes = 10 hours => more CI systems are required
+And assuming each CI run takes 10 minutes, and each developer does 30 changes per day, with 2 developers = 60 changes = 600 minutes = 10 hours.
 
-[plantuml, foobar2, svg]
+It should be possible to determine the feedback for the change while developers go get coffee, so more CIS systems are required. Typically hardware is cheaper than wages, so one CIS system per developer is an easy solution, but expensive?
+
+[plantuml, scenario4, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -102,17 +112,13 @@ CIS .left.> Revert
 ....
 
 == Scenario 5 - Containerization
-for each change, spawn a new CIS system and deploy the changes, run CI
+Instead of having a lot of idle systems, spawn a new CIS system using containerization and deploy the changes, run CI.
 
--> revert not reliable, unless each ABAP change is reliable, which I assume not
+This way there will be a common baseline for everything, and no need to do any reverts, just spawning systems instead.
 
-Unit tests can change data in the database, they should not, but this is a different topic.
+This can give reliable results in a timely manner, but I still have not seen anyone doing this setup yet, as its difficult to get everything running, and though decisions have to be made to determine which baseline to use. If its a large container snapshot, hot standbys can be setup to respond fast.
 
-Design the computer systems for worst case scenario, not assumptions regarding best case scenario.
-
--> reliable, same baseline for everything
-
-[plantuml, foobar2, svg]
+[plantuml, scenario5, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -127,20 +133,26 @@ QAS --> PRD
 
 == Scenario 6 - Run inside DEV
 
-partner solutions inside dev system
+Going in the other direction, setting up new infrastructure is time consuming and expensive. How about running the CI inside the existing DEV system? This will sacrifice some reliability as the changes are not tested in isolation, but partner solutions exists that can help reduce this risk.
 
-Take the risk of less reliable results, and run the CI inside the DEV system.
-Already existing landscape
+[plantuml, scenario6, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV {
+  rectangle "CI" as ci
+}
+....
 
 == Scenario 7 - Multiple active versions
 
-according to SAP they have support for development and maintenance within the same system on the road-map
+According to the slides, SAP have support for development and maintenance within the same system on the road-map.
 
-this is possible today, but with multiple systems
+This is possible today, but with multiple systems, so I assume the new innovation will be supporting this in a single system, and at the same time. So the ABAP kernel will have to support multiple active versions at a time. When(if?) this is implemented, the CI can run within the DEV system, just on the version with the changes done by the developer.
 
-I assume the new part will be supporting this in a single system, and at the same time. So the ABAP kernel will have to support multiple active versions at a time. When(if?) this is implemented, the CI can run within the DEV system, just on the version with the changes done by the developer.
+This however raises a lot of other questions regarding maintenance of data, database isolation etc.
 
-[plantuml, foobar2, svg]
+[plantuml, scenario7, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -152,13 +164,15 @@ rectangle DEV {
 
 == Scenario 8 - One system per developer
 
-as suggested by @Ethan back in 2016
+As suggested by @Ethan back in 2016
 
 http://searchsap.techtarget.com/answer/How-can-I-use-Git-and-GitHub-for-SAP-software-development
 
 http://searchsap.techtarget.com/tip/Implementing-modern-practices-in-an-ABAP-development-shop
 
-[plantuml, foobar2, svg]
+Give one development system to each ABAP developer, this will help doing the development and unit tests in isolation. But still CI should be run centrally on aligned infrastructure and configuration.
+
+[plantuml, scenario8, svg]
 ....
 left to right direction
 skinparam monochrome true
@@ -171,19 +185,30 @@ developer2 --> DEV2
 ....
 
 == Scenario 9 - Front-load outside ABAP AS
-sdf
+Performing CI on ABAP application servers is required, but might be an extensive setup.
 
-front load as much work as possible -> abaplint
+For tasks like checking whitespace, a complete ABAP AS is not really required, multiple steps can be added in the CI pipeline, and once initial checks have been made, the ABAP CI run can be started.
 
--> ecosystem!
+abaplint(https://abaplint.org/) is one option that exists, it can run on linux, so it hooks easily into GitHub Actions / GitLab Pipelines / whatever. If doing development in other languages than ABAP this is a typical setup for development, so it might be able to run on already existing infrastructure. Also note that this does not require any commercial licenses to run, so it can be used for open source development.
 
--> no changes to SAP landscape
+Results can be unreliable, but setup is easy and cheap.
 
--> wrong results
+[plantuml, scenario9, svg]
+....
+left to right direction
+skinparam monochrome true
+rectangle DEV
+rectangle QAS
+collections "Non-ABAP" as CIS
+rectangle PRD
+DEV --> QAS
+DEV -left-> CIS
+QAS --> PRD
+....
 
 == Conclusions
-CI in ABAP is difficult, choose your risk: cost/complexity/speed
+CI in ABAP is difficult, choose wisely among cost, reliability, speed, complexity etc. they have large consequences on the development process and infrastructure.
 
-Do containerization
+Fully supporting continuous integration is not just getting some results to the pipeline, like getting code into git is not devops.
 
-Don't build development tools into the kernel
+ABAP containerization is required to fully support CI, without it its not possible to fully support continuous integration.
