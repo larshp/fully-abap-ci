@@ -71,6 +71,8 @@ For ABAP systems its difficult to do a proper rollback of the objects. The unit 
 
 This means that the system cannot be used for manual testing at the same time, for each change the developers make the system is changed. Alternatively specific time-slots are allocated for CI and some other for manual testing.
 
+All-in-all this ends up with an automated process for breaking the QAS system, instead of avoiding errors via automation.
+
 == Scenario 3 - Add new CI system
 So, to not disturb manual testing in the QAS system, the CI run can be moved to a different server. CI runs in CIS system, and manual testing is done in QAS,
 
