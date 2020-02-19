@@ -148,7 +148,7 @@ rectangle DEV {
 
 == Scenario 7 - Multiple active versions
 
-According to the slides, SAP have support for development and maintenance within the same system on the road-map.
+According to the slides(https://twitter.com/WachterSascha/status/1227254813542559745/photo/1), SAP have support for development and maintenance within the same system on the road-map.
 
 This is possible today, but with multiple systems, so I assume the new innovation will be supporting this in a single system, and at the same time. So the ABAP kernel will have to support multiple active versions at a time. When(if?) this is implemented, the CI can run within the DEV system, just on the version with the changes done by the developer.
 
