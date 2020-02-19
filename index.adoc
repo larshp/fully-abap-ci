@@ -164,6 +164,8 @@ rectangle DEV {
 }
 ....
 
+Guess this will never happen, instead what the slides refer to is probably a possibility to change between active versions. If there is more than one developer working in the area switched to development or maintenance on the same system, they will have to coordinate when to do one thing or another. I.e. it still makes sense to have separate development and maintenance systems.
+
 == Scenario 8 - One system per developer
 
 As suggested by @Ethan back in 2016
